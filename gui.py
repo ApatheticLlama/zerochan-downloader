@@ -25,7 +25,7 @@ class DownloaderGUI:
         self.opt_sort = tk.OptionMenu(self.root, self.v, *self.option_list) 
 
         self.btn_dir = tk.Button(text="Folder", command=self.get_dir)
-        self.btn_download = tk.Button(text="Download", command=self.downlod_images)
+        self.btn_download = tk.Button(text="Download", command=self.download_images)
 
         # i don't know how to do this in any better way
         self.lbl_tags.pack()
@@ -38,12 +38,13 @@ class DownloaderGUI:
         self.opt_sort.pack()
 
         self.btn_dir.pack()
+        self.btn_download.pack()
 
     def get_dir(self):
         self.download_dir = filedialog.askdirectory()
 
     def download_images(self):
-        self.v.set("hmm")
+        pass
 
 if __name__ == "__main__":
     bruh = DownloaderGUI()
