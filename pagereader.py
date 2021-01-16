@@ -35,6 +35,7 @@ class PageReader():
         
 
 if __name__ == '__main__':
-    test = PageReader("https://www.zerochan.net/Fate%2FGrand+Order?s=fav")
-    test.collect_links()
-    test.download()
+    #test = PageReader("https://www.zerochan.net/Fate%2FGrand+Order?s=fav")
+    #test.collect_links()
+    #test.download()
+    pass
