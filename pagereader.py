@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 import re
 import requests
 
+from linkgenerator import LinkGenerator
+
 class PageReader():
     def __init__(self, url):
         self.url = url
