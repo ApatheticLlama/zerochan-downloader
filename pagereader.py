@@ -11,6 +11,7 @@ class PageReader():
         self.p = re.compile(r'https://static\.zerochan\.net/(?!download\.png)[\s\S]*?\.full\.[\d]*?\.[jp][pn]g')
         self.session = requests.Session()
         self.headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36"}
+        self.links = []
 
 
     def get_url(self):
@@ -19,17 +20,19 @@ class PageReader():
     def get_page(self):
         return self.page
 
-    def parse(self):
-        return self.p.findall(str(self.page))
+    def collect_links(self):
+        self.links = self.p.findall(str(self.page))
+
+    def download(self):
+        increment = 0 # stupid
+        for link in self.links:
+            img = self.session.get(link, headers=self.headers).content
+            with open (str(increment) + link[-4:], 'wb') as f:
+                f.write(img)
+                increment += 1
+        
 
 if __name__ == '__main__':
     test = PageReader("https://www.zerochan.net/Fate%2FGrand+Order?s=fav")
-
-    increment = 0 # stupid
-    for link in test.parse():
-        img = test.session.get(link, headers=test.headers).content
-        with open (str(increment) + link[-4:], 'wb') as f:
-            f.write(img)
-            increment += 1
-
-        print(link)
+    test.collect_links()
+    test.download()
