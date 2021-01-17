@@ -11,7 +11,7 @@ class PageReader():
 
         self.p = re.compile(r'https://static\.zerochan\.net/(?!download\.png)[\s\S]*?\.full\.[\d]*?\.[jp][pn]g')
         self.session = requests.Session()
-        self.headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36"} # something interesting i noticed is that requests is actually slower with a user agent. just a note for later
+        self.headers = {"User-Agent": "Mozilla/5.0 (X11; CrOS x86_64 12871.102.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.141 Safari/537.36"}
         self.links = []
 
 
@@ -20,7 +20,7 @@ class PageReader():
     
     def collect_links(self):
         for i in range(1, 101):
-            soup = BeautifulSoup(requests.get(self.url + str(i)).text, "lxml")
+            soup = BeautifulSoup(self.session.get(self.url + str(i), headers=self.headers).text, "lxml")
             page = soup.find("ul", {"id": "thumbs2"})
 
             self.links.extend(self.p.findall(str(page)))
