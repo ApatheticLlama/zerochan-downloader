@@ -56,10 +56,15 @@ class DownloaderGUI:
 
     def get_dir(self):
         self.download_dir.set(filedialog.askdirectory())
+
+    def get_link(self):
+        url = LinkGenerator(self.ent_tags.get(), self.opt_sort.get())
+        link = url.generate_link()
+        return link
     
     def download_images(self):
         self.btn_download.configure(state=tk.DISABLED)
-        
+        link = self.get_link()        
 
 if __name__ == "__main__":
     bruh = DownloaderGUI()
