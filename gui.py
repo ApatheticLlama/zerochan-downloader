@@ -30,11 +30,10 @@ class DownloaderGUI:
         self.opt_sort = tk.OptionMenu(self.root, self.default_sort, *self.option_list) 
 
         self.frm_dir = tk.Frame() # directory frame
-
         self.btn_dir = tk.Button(text="Folder", command=self.get_dir, master=self.frm_dir)
         self.btn_dir.pack(side=tk.LEFT)
 
-        self.lbl_dir = tk.Label(text=self.download_dir.get(), master=self.frm_dir)
+        self.lbl_dir = tk.Label(textvariable=self.download_dir, master=self.frm_dir)
         self.lbl_dir.pack(side=tk.LEFT)
 
         self.frm_download = tk.Frame() # download frame
