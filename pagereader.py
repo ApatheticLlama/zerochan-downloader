@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
 import re
 import requests
+import time
+import random
 
 from linkgenerator import LinkGenerator
 
@@ -20,7 +22,9 @@ class PageReader():
     
     def collect_links(self):
         for i in range(1, 101):
+            print(i)
             soup = BeautifulSoup(self.session.get(self.url + str(i), headers=self.headers).text, "lxml")
+            print(i)
             page = soup.find("ul", {"id": "thumbs2"})
 
             self.links.extend(self.p.findall(str(page)))
@@ -29,13 +33,20 @@ class PageReader():
                 self.links = self.links[0:self.image_cnt]
                 break
 
+            time.sleep(random.randint(3, 8))
+
     def download(self, dir):
         increment = 0 # stupid
         for link in self.links:
+            print(increment)
             img = self.session.get(link, headers=self.headers).content
+            print(increment)
             with open (dir.get() + '/' + str(increment) + link[-4:], 'wb') as f:
                 f.write(img)
                 increment += 1
+
+            time.sleep(random.randint(3, 8))
+
         
 
 if __name__ == '__main__':

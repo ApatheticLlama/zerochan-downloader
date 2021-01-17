@@ -60,7 +60,7 @@ class DownloaderGUI:
         return link
     
     def download_images(self):
-        if not self.ent_count.get().isdigit():
+        if not self.ent_count.get().isdigit() or not self.ent_tags.get():
             return
 
         self.btn_download.configure(state=tk.DISABLED)
