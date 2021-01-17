@@ -17,6 +17,9 @@ class DownloaderGUI:
         self.download_dir = tk.StringVar()
         self.download_dir.set(os.getcwd())
 
+        self.progress = tk.StringVar()
+        self.progress.set("No download in progress")
+
         self.lbl_tags = tk.Label(text="Tags (Comma Separated)") # labels
         self.lbl_count = tk.Label(text="Number of images")
         self.lbl_sort = tk.Label(text="Sort")
@@ -35,7 +38,10 @@ class DownloaderGUI:
 
         self.frm_download = tk.Frame() # download frame
         self.btn_download = tk.Button(text="Download", command=self.download_images, master=self.frm_download)
-        self.btn_download.pack()
+        self.btn_download.pack(side=tk.LEFT)
+
+        self.lbl_download = tk.Label(textvariable=self.progress, master=self.frm_download)
+        self.lbl_download.pack(side=tk.LEFT)
 
         # i don't know how to do this in any better way
         self.lbl_tags.pack()
