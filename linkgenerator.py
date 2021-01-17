@@ -4,9 +4,9 @@ class LinkGenerator():
         self.sort = sort
     
     def generate_link(self):
-        switcher = {"recent": "id", "popular": "fav", "random": "random"}
+        switcher = {"Recent": "id", "Popular": "fav", "Random": "random"}
         sort = switcher[self.sort]
-        return "https://zerochan.net/" + ', '.join(self.keywords) + "?s=" + sort + "&p="
+        return "https://zerochan.net/" + self.keywords + "?s=" + sort + "&p="
 
 
 #test_link = LinkGenerator("Kemonomimi", "popular")

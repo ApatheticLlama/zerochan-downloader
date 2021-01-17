@@ -7,15 +7,12 @@ from pagereader import PageReader
 
 class DownloaderGUI:
     def __init__(self):
-        self.pagereader = PageReader()
-
-        # tkinter stuff
         self.root = tk.Tk()
         self.root.title("Zerochan Downloader v0.0.1")
         self.option_list = ("Popular", "Recent", "Random")
 
-        self.default_sort = tk.StringVar()
-        self.default_sort.set("Popular")
+        self.sort_method = tk.StringVar()
+        self.sort_method.set("Popular")
 
         self.download_dir = tk.StringVar()
         self.download_dir.set(os.getcwd())
@@ -27,7 +24,7 @@ class DownloaderGUI:
         self.ent_tags = tk.Entry() # entries
         self.ent_count = tk.Entry()
 
-        self.opt_sort = tk.OptionMenu(self.root, self.default_sort, *self.option_list) 
+        self.opt_sort = tk.OptionMenu(self.root, self.sort_method, *self.option_list) 
 
         self.frm_dir = tk.Frame() # directory frame
         self.btn_dir = tk.Button(text="Folder", command=self.get_dir, master=self.frm_dir)
@@ -58,13 +55,16 @@ class DownloaderGUI:
         self.download_dir.set(filedialog.askdirectory())
 
     def get_link(self):
-        url = LinkGenerator(self.ent_tags.get(), self.opt_sort.get())
+        url = LinkGenerator(self.ent_tags.get(), self.sort_method.get())
         link = url.generate_link()
         return link
     
     def download_images(self):
         self.btn_download.configure(state=tk.DISABLED)
-        link = self.get_link()        
+        link = self.get_link()
+        pagereader = PageReader(link, int(self.ent_count.get()))
+        pagereader.collect_links()  
+        #pagereader.download()
 
 if __name__ == "__main__":
     bruh = DownloaderGUI()

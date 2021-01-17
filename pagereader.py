@@ -1,4 +1,3 @@
-from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
 import requests
@@ -6,10 +5,9 @@ import requests
 from linkgenerator import LinkGenerator
 
 class PageReader():
-    def __init__(self, url):
+    def __init__(self, url, image_cnt=10):
         self.url = url
-        self.soup = BeautifulSoup(urlopen(url), "lxml")
-        self.page = self.soup.find("ul", {"id": "thumbs2"})
+        self.image_cnt = image_cnt
         self.p = re.compile(r'https://static\.zerochan\.net/(?!download\.png)[\s\S]*?\.full\.[\d]*?\.[jp][pn]g')
         self.session = requests.Session()
         self.headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36"}
@@ -19,11 +17,16 @@ class PageReader():
     def get_url(self):
         return self.url
     
-    def get_page(self):
-        return self.page
-
     def collect_links(self):
-        self.links = self.p.findall(str(self.page))
+        for i in range(1, 101):
+            soup = BeautifulSoup(requests.get(self.url + str(i)).text, "lxml")
+            page = soup.find("ul", {"id": "thumbs2"})
+
+            self.links.append(self.p.findall(str(page)))
+
+            if len(self.links) >= self.image_cnt:
+                self.links = self.links[0:self.image_cnt]
+                break
 
     def download(self):
         increment = 0 # stupid
