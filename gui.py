@@ -7,7 +7,7 @@ from pagereader import PageReader
 
 class DownloaderGUI:
     def __init__(self):
-        self.download_dir = os.getcwd() # default download location
+        self.pagereader = PageReader()
 
         # tkinter stuff
         self.root = tk.Tk()
@@ -56,14 +56,10 @@ class DownloaderGUI:
 
     def get_dir(self):
         self.download_dir.set(filedialog.askdirectory())
-
-    def get_link(self):
-        url = LinkGenerator(self.ent_tags.get(), self.ent_count.get(), self.opt_sort.get())
-        link = url.generate_link()
-        return link
     
     def download_images(self):
-        pass
+        self.btn_download.configure(state=tk.DISABLED)
+        
 
 if __name__ == "__main__":
     bruh = DownloaderGUI()
