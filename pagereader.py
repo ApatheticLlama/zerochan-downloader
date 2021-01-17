@@ -38,8 +38,4 @@ if __name__ == '__main__':
     #test = PageReader("https://www.zerochan.net/Fate%2FGrand+Order?s=fav")
     #test.collect_links()
     #test.download()
-<<<<<<< HEAD
     pass
-=======
-    pass
->>>>>>> 6086368066bc7536bf38b93c268056887313bacb
