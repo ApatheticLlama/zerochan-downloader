@@ -22,7 +22,7 @@ class PageReader():
             soup = BeautifulSoup(requests.get(self.url + str(i)).text, "lxml")
             page = soup.find("ul", {"id": "thumbs2"})
 
-            self.links.append(self.p.findall(str(page)))
+            self.links.extend(self.p.findall(str(page)))
 
             if len(self.links) >= self.image_cnt:
                 self.links = self.links[0:self.image_cnt]
