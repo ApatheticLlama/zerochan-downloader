@@ -67,7 +67,7 @@ class DownloaderGUI:
         link = self.get_link()
         pagereader = PageReader(link, int(self.ent_count.get()))
         pagereader.collect_links()  
-        pagereader.download()
+        pagereader.download(self.download_dir)
         self.btn_download.configure(state=tk.NORMAL)
 
 if __name__ == "__main__":
