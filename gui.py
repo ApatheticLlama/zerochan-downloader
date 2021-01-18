@@ -5,7 +5,7 @@ from tkinter import filedialog, OptionMenu
 from linkgenerator import LinkGenerator
 from pagereader import PageReader
 
-class DownloaderGUI:
+class DownloaderGUI():
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("Zerochan Downloader v0.0.1")
@@ -14,11 +14,8 @@ class DownloaderGUI:
         self.sort_method = tk.StringVar()
         self.sort_method.set("Popular")
 
-        self.download_dir = tk.StringVar()
-        self.download_dir.set(os.getcwd())
-
-        self.progress = tk.StringVar()
-        self.progress.set("No download in progress")
+        self.var_download_dir = tk.StringVar()
+        self.var_download_dir.set(os.getcwd())
 
         self.lbl_tags = tk.Label(text="Tags (Comma Separated)") # labels
         self.lbl_count = tk.Label(text="Number of images")
@@ -33,14 +30,14 @@ class DownloaderGUI:
         self.btn_dir = tk.Button(text="Folder", command=self.get_dir, master=self.frm_dir)
         self.btn_dir.pack(side=tk.LEFT)
 
-        self.lbl_dir = tk.Label(textvariable=self.download_dir, master=self.frm_dir)
+        self.lbl_dir = tk.Label(textvariable=self.var_download_dir, master=self.frm_dir)
         self.lbl_dir.pack(side=tk.LEFT)
 
         self.frm_download = tk.Frame() # download frame
         self.btn_download = tk.Button(text="Download", command=self.download_images, master=self.frm_download)
         self.btn_download.pack(side=tk.LEFT)
 
-        self.lbl_download = tk.Label(textvariable=self.progress, master=self.frm_download)
+        self.lbl_download = tk.Label(text="No download in progress", master=self.frm_download)
         self.lbl_download.pack(side=tk.LEFT)
 
         # i don't know how to do this in any better way
@@ -58,7 +55,7 @@ class DownloaderGUI:
 
 
     def get_dir(self):
-        self.download_dir.set(filedialog.askdirectory())
+        self.var_download_dir.set(filedialog.askdirectory())
 
     def get_link(self):
         url = LinkGenerator(self.ent_tags.get(), self.sort_method.get())
@@ -72,8 +69,21 @@ class DownloaderGUI:
         self.btn_download.configure(state=tk.DISABLED)
         link = self.get_link()
         pagereader = PageReader(link, int(self.ent_count.get()))
-        pagereader.collect_links()  
-        pagereader.download(self.download_dir)
+        
+        self.lbl_download.config(text=f"Collecting Links (0/{self.ent_count.get()})")
+        self.root.update()
+
+        gen = pagereader.collect_links()
+
+        while True:
+            try:
+                link_cnt = next(gen)
+                self.lbl_download.config(text=f"Collecting Links ({min(link_cnt, int(self.ent_count.get()))}/{self.ent_count.get()})")
+                self.root.update()
+            except StopIteration:
+                break
+
+        pagereader.download(self.var_download_dir)
         self.btn_download.configure(state=tk.NORMAL)
 
 if __name__ == "__main__":
