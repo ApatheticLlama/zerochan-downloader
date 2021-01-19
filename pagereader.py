@@ -39,4 +39,6 @@ class PageReader():
             img = self.session.get(link, headers=self.headers).content
             with open (dir.get() + '/' + str(i) + link[-4:], 'wb') as f:
                 f.write(img)
-                i += 1        
+                i += 1
+            
+            yield i
