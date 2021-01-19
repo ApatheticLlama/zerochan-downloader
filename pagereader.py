@@ -34,7 +34,11 @@ class PageReader():
                 break
 
     def download(self, dir):
+<<<<<<< HEAD
         i = 0
+=======
+        i = 0 # stupid
+>>>>>>> cf5e14ce042ede6287efaecad368d39148849a04
         for link in self.links:
             img = self.session.get(link, headers=self.headers).content
             with open (dir.get() + '/' + str(i) + link[-4:], 'wb') as f:
