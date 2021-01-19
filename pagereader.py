@@ -33,20 +33,10 @@ class PageReader():
             if page is None or len(self.links) == self.image_cnt:
                 break
 
-    def download(self, dir, progress):
-        i = 0 # stupid
+    def download(self, dir):
+        i = 0
         for link in self.links:
             img = self.session.get(link, headers=self.headers).content
             with open (dir.get() + '/' + str(i) + link[-4:], 'wb') as f:
                 f.write(img)
-                i += 1
-
-            # time.sleep(random.randint(3, 8))
-
-        
-
-if __name__ == '__main__':
-    #test = PageReader("https://www.zerochan.net/Fate%2FGrand+Order?s=fav")
-    #test.collect_links()
-    #test.download()
-    pass
+                i += 1        
