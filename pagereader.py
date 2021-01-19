@@ -33,7 +33,7 @@ class PageReader():
             if page is None or len(self.links) == self.image_cnt:
                 break
 
-    def download(self, dir, progress):
+    def download(self, dir):
         i = 0 # stupid
         for link in self.links:
             img = self.session.get(link, headers=self.headers).content
