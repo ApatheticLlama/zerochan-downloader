@@ -10,7 +10,7 @@ from pagereader import PageReader
 class DownloaderGUI():
     def __init__(self):
         # threading
-        self.thread_queue = queue.Queue
+        self.thread_queue = queue.Queue()
 
         # tk
         self.root = tk.Tk()
@@ -68,6 +68,13 @@ class DownloaderGUI():
         link = url.generate_link()
         return link
     
+    def process_queue(self):
+            link_count = self.thread_queue.get()
+            if link_count == "complete":
+                return
+            print(link_count)
+            self.root.after(100, self.process_queue)
+    
     def download_images(self):
         if not self.ent_count.get().isdigit() or not self.ent_tags.get() or not self.var_download_dir.get():
             return
@@ -75,10 +82,12 @@ class DownloaderGUI():
         self.btn_download.configure(state=tk.DISABLED)
 
         link = self.get_link()
-        pagereader = PageReader(link, self.var_download_dir.get(), (self.ent_count.get()))
+        pagereader = PageReader(link, self.var_download_dir.get(), int(self.ent_count.get()))
 
         download_thread = threading.Thread(target=pagereader.download, args=(self.thread_queue,))
         download_thread.start()
+
+        self.process_queue()
 
         """
         

@@ -49,7 +49,11 @@ class PageReader():
         while True:
             try:
                 link_count = next(link_gen)
+                queue.put(link_count)
             except StopIteration:
                 break
 
-        download_gen = self.download_images()
+        print("done collecting links")
+        queue.put("complete")
+
+        #download_gen = self.download_images()
