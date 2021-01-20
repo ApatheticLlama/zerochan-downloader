@@ -70,12 +70,20 @@ class DownloaderGUI():
     
     def process_queue(self):
         try:
-            link_count = self.thread_queue.get(False)
-            if link_count == "complete":
-                print("complete")
-                self.btn_download.configure(state=tk.NORMAL)
+            data = self.thread_queue.get(False)
+            flag = data[0]
+            cnt = data[1:]
+
+
+            if flag == 'c':
+                self.lbl_download.config(text=f"Collected {cnt} links")
+            elif flag =='d':
+                self.lbl_download.config(text=f"Downloaded {cnt} images")
+            else:
+                self.lbl_download.config(text="No download in progress", fg='red')
+                self.btn_download.config(state=tk.NORMAL)
                 return
-            print(link_count)
+            
         except queue.Empty:
             pass
         
@@ -85,12 +93,13 @@ class DownloaderGUI():
         if not self.ent_count.get().isdigit() or not self.ent_tags.get() or not self.var_download_dir.get():
             return
 
-        self.btn_download.configure(state=tk.DISABLED)
+        self.btn_download.config(state=tk.DISABLED)
 
         link = self.get_link()
         pagereader = PageReader(link, self.var_download_dir.get(), int(self.ent_count.get()))
 
         download_thread = threading.Thread(target=pagereader.download, args=(self.thread_queue,))
+        download_thread.setDaemon(True)
         download_thread.start()
 
         self.process_queue()

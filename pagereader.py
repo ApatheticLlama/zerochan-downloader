@@ -38,20 +38,27 @@ class PageReader():
         i = 0
         for link in self.links:
             img = self.session.get(link, headers=self.headers).content
-            with open (self.dir.get() + '/' + str(i) + link[-4:], 'wb') as f:
+            with open (self.dir + '/' + str(i) + link[-4:], 'wb') as f:
                 f.write(img)
                 i += 1
             
             yield i
     
     def download(self, queue):
+        queue.put('c0')
         link_gen = self.collect_links()
         while True:
             try:
-                link_count = next(link_gen)
+                link_count = 'c' + str(next(link_gen))
                 queue.put(link_count)
             except StopIteration:
                 break
-
-        queue.put("complete")
-        #download_gen = self.download_images()
+        
+        queue.put('d0')
+        download_gen = self.download_images()
+        while True:
+            try:
+                download_count = 'd' + str(next(download_gen))
+                queue.put(download_count)
+            except StopIteration:
+                break
