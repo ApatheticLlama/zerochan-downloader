@@ -80,7 +80,7 @@ class DownloaderGUI():
             elif flag =='d':
                 self.lbl_download.config(text=f"Downloaded {cnt} images")
             else:
-                self.lbl_download.config(text="No download in progress", fg='red')
+                self.lbl_download.config(text="No download in progress")
                 self.btn_download.config(state=tk.NORMAL)
                 return
             
