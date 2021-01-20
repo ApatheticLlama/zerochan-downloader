@@ -62,3 +62,5 @@ class PageReader():
                 queue.put(download_count)
             except StopIteration:
                 break
+
+        queue.put("idk what to put here just has to not start with c or d lol")

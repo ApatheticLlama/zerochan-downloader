@@ -104,38 +104,6 @@ class DownloaderGUI():
 
         self.process_queue()
 
-        """
-        
-        self.lbl_download.config(text=f"Collecting Links (0/{self.ent_count.get()})")
-        self.root.update()
-
-        gen = pagereader.collect_links()
-
-        while True:
-            try:
-                link_cnt = next(gen)
-                self.lbl_download.config(text=f"Collecting Links ({min(link_cnt, int(self.ent_count.get()))}/{self.ent_count.get()})")
-                self.root.update()
-            except StopIteration:
-                break
-
-        self.lbl_download.config(text="Downloading Images (0/0)")
-        self.root.update()
-
-        gen = pagereader.download(self.var_download_dir)
-        
-        while True:
-            try:
-                img_downloaded = next(gen)
-                self.lbl_download.config(text=f"Downloading Images ({img_downloaded}/{self.ent_count.get()})")
-                self.root.update()
-            except StopIteration:
-                break
-        
-        self.lbl_download.config(text="No download in progress")
-        self.btn_download.configure(state=tk.NORMAL)
-        """
-
 if __name__ == "__main__":
     bruh = DownloaderGUI()
     tk.mainloop()
