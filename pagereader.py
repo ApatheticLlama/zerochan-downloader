@@ -53,7 +53,5 @@ class PageReader():
             except StopIteration:
                 break
 
-        print("done collecting links")
         queue.put("complete")
-
         #download_gen = self.download_images()

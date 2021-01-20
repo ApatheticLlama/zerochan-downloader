@@ -69,12 +69,18 @@ class DownloaderGUI():
         return link
     
     def process_queue(self):
-            link_count = self.thread_queue.get()
+        try:
+            link_count = self.thread_queue.get(False)
             if link_count == "complete":
+                print("complete")
+                self.btn_download.configure(state=tk.NORMAL)
                 return
             print(link_count)
-            self.root.after(100, self.process_queue)
-    
+        except queue.Empty:
+            pass
+        
+        self.root.after(100, self.process_queue)
+
     def download_images(self):
         if not self.ent_count.get().isdigit() or not self.ent_tags.get() or not self.var_download_dir.get():
             return
