@@ -69,21 +69,16 @@ class DownloaderGUI():
         return link
     
     def download_images(self):
-        if not self.ent_count.get().isdigit() or not self.ent_tags.get():
+        if not self.ent_count.get().isdigit() or not self.ent_tags.get() or not self.var_download_dir.get():
             return
 
         self.btn_download.configure(state=tk.DISABLED)
-        self.ent_count.config(state='disabled')
-        self.ent_tags.config(state='disabled')
 
         link = self.get_link()
-        pagereader = PageReader(link, int(self.ent_count.get()))
+        pagereader = PageReader(link, self.var_download_dir.get(), (self.ent_count.get()))
 
         download_thread = threading.Thread(target=pagereader.download, args=(self.thread_queue,))
         download_thread.start()
-
-        # progress_thread = threading.Thread(target=)
-
 
         """
         

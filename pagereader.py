@@ -7,8 +7,9 @@ import random
 from linkgenerator import LinkGenerator
 
 class PageReader():
-    def __init__(self, url, image_cnt=10):
+    def __init__(self, url, dir, image_cnt):
         self.url = url
+        self.dir = dir
         self.image_cnt = image_cnt
 
         self.p = re.compile(r'https://static\.zerochan\.net/(?!download\.png)[\s\S]*?\.full\.[\d]*?\.[jp][pn]g')
@@ -33,28 +34,22 @@ class PageReader():
             if page is None or len(self.links) == self.image_cnt:
                 break
 
-    def download_images(self, dir):
+    def download_images(self):
         i = 0
         for link in self.links:
             img = self.session.get(link, headers=self.headers).content
-            with open (dir.get() + '/' + str(i) + link[-4:], 'wb') as f:
+            with open (self.dir.get() + '/' + str(i) + link[-4:], 'wb') as f:
                 f.write(img)
                 i += 1
             
             yield i
     
     def download(self, queue):
-        while True:
-            print("test")
-            time.sleep(1)
-
         link_gen = self.collect_links()
-        link_list = []
         while True:
             try:
-                link = next(link_gen)
-                link_list.append(link)
+                link_count = next(link_gen)
             except StopIteration:
                 break
 
-        self.download_images(link_list)
+        download_gen = self.download_images()
