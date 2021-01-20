@@ -1,4 +1,6 @@
 import os
+import threading
+import queue
 import tkinter as tk
 from tkinter import filedialog, OptionMenu
 
@@ -7,6 +9,10 @@ from pagereader import PageReader
 
 class DownloaderGUI():
     def __init__(self):
+        # threading
+        self.thread_queue = queue.Queue
+
+        # tk
         self.root = tk.Tk()
         self.root.title("Zerochan Downloader v0.0.1")
         self.option_list = ("Popular", "Recent", "Random")
@@ -67,8 +73,19 @@ class DownloaderGUI():
             return
 
         self.btn_download.configure(state=tk.DISABLED)
+        self.ent_count.config(state='disabled')
+        self.ent_tags.config(state='disabled')
+
         link = self.get_link()
         pagereader = PageReader(link, int(self.ent_count.get()))
+
+        download_thread = threading.Thread(target=pagereader.download, args=(self.thread_queue,))
+        download_thread.start()
+
+        # progress_thread = threading.Thread(target=)
+
+
+        """
         
         self.lbl_download.config(text=f"Collecting Links (0/{self.ent_count.get()})")
         self.root.update()
@@ -98,6 +115,7 @@ class DownloaderGUI():
         
         self.lbl_download.config(text="No download in progress")
         self.btn_download.configure(state=tk.NORMAL)
+        """
 
 if __name__ == "__main__":
     bruh = DownloaderGUI()

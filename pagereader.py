@@ -33,7 +33,7 @@ class PageReader():
             if page is None or len(self.links) == self.image_cnt:
                 break
 
-    def download(self, dir):
+    def download_images(self, dir):
         i = 0
         for link in self.links:
             img = self.session.get(link, headers=self.headers).content
@@ -42,3 +42,19 @@ class PageReader():
                 i += 1
             
             yield i
+    
+    def download(self, queue):
+        while True:
+            print("test")
+            time.sleep(1)
+
+        link_gen = self.collect_links()
+        link_list = []
+        while True:
+            try:
+                link = next(link_gen)
+                link_list.append(link)
+            except StopIteration:
+                break
+
+        self.download_images(link_list)
