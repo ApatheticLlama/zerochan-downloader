@@ -10,7 +10,7 @@ from pagereader import PageReader
 class DownloaderGUI():
     def __init__(self):
         # threading
-        self.thread_queue = queue.Queue
+        self.thread_queue = queue.Queue()
 
         # tk
         self.root = tk.Tk()
@@ -67,6 +67,26 @@ class DownloaderGUI():
         url = LinkGenerator(self.ent_tags.get(), self.sort_method.get())
         link = url.generate_link()
         return link
+
+    def process_queue(self):
+        try:
+            data = self.thread_queue.get(False)
+            flag = data[0]
+            count = data[1:]
+
+            if flag == "c":
+                self.lbl_download.config(text=f"Collected {count} links")
+            elif flag == "d":
+                self.lbl_download.config(text=f"Downloaded {count} images")
+            else:
+                self.lbl_download.config(text=f"No download in progress")
+                self.btn_download.config(state=tk.NORMAL)
+                return
+        
+        except queue.Empty:
+            pass
+
+        self.root.after(100, self.process_queue)
     
     def download_images(self):
         if not self.ent_count.get().isdigit() or not self.ent_tags.get() or not self.var_download_dir.get():
@@ -75,10 +95,13 @@ class DownloaderGUI():
         self.btn_download.configure(state=tk.DISABLED)
 
         link = self.get_link()
-        pagereader = PageReader(link, self.var_download_dir.get(), (self.ent_count.get()))
+        pagereader = PageReader(link, self.var_download_dir.get(), int(self.ent_count.get()))
 
-        download_thread = threading.Thread(target=pagereader.download, args=(self.thread_queue,))
+        download_thread = threading.Thread(target=pagereader.download, args=(self.thread_queue,)) # run it again that comma should have fixed it
+        download_thread.setDaemon(True)
         download_thread.start()
+
+        self.process_queue()        
 
         """
         

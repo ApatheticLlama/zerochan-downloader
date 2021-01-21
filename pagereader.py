@@ -35,21 +35,32 @@ class PageReader():
                 break
 
     def download_images(self):
-        i = 0
-        for link in self.links:
+        p=re.compile(r'(?!https:\/\/static\.zerochan\.net\/)[/s/S]*\.full\.[\d]*?\.[jp][pn]g') #nvm missing parentheses
+        for iteration, link in enumerate(self.links):
+            name = p.search(str(link)).group(0)
             img = self.session.get(link, headers=self.headers).content
-            with open (self.dir.get() + '/' + str(i) + link[-4:], 'wb') as f:
+            with open (self.dir + '/' + name, 'wb') as f: 
                 f.write(img)
-                i += 1
             
-            yield i
+            yield iteration
     
     def download(self, queue):
+        queue.put('c')
         link_gen = self.collect_links()
         while True:
             try:
-                link_count = next(link_gen)
+                link_count = 'c' + str(next(link_gen))
+                queue.put(link_count)
             except StopIteration:
                 break
-
+        
+        queue.put('d')
         download_gen = self.download_images()
+        while True:
+            try:
+                download_count = 'd' + str(next(download_gen))
+                queue.put(download_count)
+            except StopIteration:
+                break
+        
+        queue.put("end")
