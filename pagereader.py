@@ -33,12 +33,11 @@ class PageReader():
                 break
 
     def download_images(self):
-        p=re.compile(r'[\d]*?\.[jp][pn]g')
+        p=re.compile(r'(?<=https:\/\/static\.zerochan\.net\/)[\s\S]*\.full\.[\d]*?\.[jp][pn]g')
         for iteration, link in enumerate(self.links):
-            #name = p.search(str(link)).group(0)
+            name = p.search(str(link)).group(0)
             img = self.session.get(link, headers=self.headers).content
-            #with open (self.dir + '/' + name, 'wb') as f:
-            with open (self.dir + '/' + str(iteration)+link[-4:], 'wb') as f: # lol wtf one sec
+            with open (self.dir + '/' + name, 'wb') as f: 
                 f.write(img)
             
             yield iteration
