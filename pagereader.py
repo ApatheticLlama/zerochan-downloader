@@ -28,18 +28,17 @@ class PageReader():
             
             self.links.extend(self.p.findall(str(page)))
             self.links = self.links[0:self.image_cnt]
-
-            yield len(self.links)
-
+            yield len(self.links) 
             if page is None or len(self.links) == self.image_cnt:
                 break
 
     def download_images(self):
-        p=re.compile(r'(?!https:\/\/static\.zerochan\.net\/)[/s/S]*\.full\.[\d]*?\.[jp][pn]g') #nvm missing parentheses
+        p=re.compile(r'[\d]*?\.[jp][pn]g')
         for iteration, link in enumerate(self.links):
-            name = p.search(str(link)).group(0)
+            #name = p.search(str(link)).group(0)
             img = self.session.get(link, headers=self.headers).content
-            with open (self.dir + '/' + name, 'wb') as f: 
+            #with open (self.dir + '/' + name, 'wb') as f:
+            with open (self.dir + '/' + str(iteration)+link[-4:], 'wb') as f: # lol wtf one sec
                 f.write(img)
             
             yield iteration
