@@ -12,7 +12,7 @@ class PageReader():
         self.dir = dir
         self.image_cnt = image_cnt
 
-        self.p = re.compile(r'https://static\.zerochan\.net/(?!download\.png)[\s\S]*?\.full\.[\d]*?\.[jp][pn]g')
+        self.p = re.compile(r'https://static\.zerochan\.net/(?!download\.png)[\s\S]*?\.full\.[\d]*?\.[jpg][png][gif]')
         self.session = requests.Session()
         self.headers = {"User-Agent": "Mozilla/5.0 (X11; CrOS x86_64 12871.102.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.141 Safari/537.36"}
         self.links = []
@@ -33,7 +33,7 @@ class PageReader():
                 break
 
     def download_images(self):
-        p=re.compile(r'(?<=https:\/\/static\.zerochan\.net\/)[\s\S]*\.full\.[\d]*?\.[jp][pn]g')
+        p=re.compile(r'(?<=https:\/\/static\.zerochan\.net\/)[\s\S]*\.full\.[\d]*?\.[jpg][png][gif]')
         for iteration, link in enumerate(self.links):
             name = p.search(str(link)).group(0)
             img = self.session.get(link, headers=self.headers).content
