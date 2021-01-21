@@ -7,20 +7,21 @@ import random
 from linkgenerator import LinkGenerator
 
 class PageReader():
-    def __init__(self, url, dir, image_cnt):
-        self.url = url
+    def __init__(self, dir, image_cnt, tags, sort):
         self.dir = dir
         self.image_cnt = image_cnt
-
+        self.tags = tags
+        self.sort = sort
         self.p = re.compile(r'https://static\.zerochan\.net/(?!download\.png)[\s\S]*?\.full\.[\d]*?\.[jpg][png][gif]')
         self.session = requests.Session()
         self.headers = {"User-Agent": "Mozilla/5.0 (X11; CrOS x86_64 12871.102.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.141 Safari/537.36"}
         self.links = []
+        self.url = ''
 
 
-    def get_url(self):
-        return self.url
-    
+    def get_base_url(self):
+        self.url = LinkGenerator(self.tags, self.sort).generate_link()
+
     def collect_links(self):
         for i in range(1, 101):
             soup = BeautifulSoup(self.session.get(self.url + str(i), headers=self.headers).text, "lxml")
@@ -43,7 +44,10 @@ class PageReader():
             yield iteration
     
     def download(self, queue):
-        queue.put('c')
+        queue.put('b')
+        self.get_base_url()
+
+        queue.put('c0')
         link_gen = self.collect_links()
         while True:
             try:
@@ -52,7 +56,7 @@ class PageReader():
             except StopIteration:
                 break
         
-        queue.put('d')
+        queue.put('d0')
         download_gen = self.download_images()
         while True:
             try:
@@ -61,4 +65,4 @@ class PageReader():
             except StopIteration:
                 break
         
-        queue.put("end")
+        queue.put('e') # e for end

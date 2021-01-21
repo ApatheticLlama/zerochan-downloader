@@ -4,7 +4,6 @@ import queue
 import tkinter as tk
 from tkinter import filedialog, OptionMenu
 
-from linkgenerator import LinkGenerator
 from pagereader import PageReader
 
 class DownloaderGUI():
@@ -63,20 +62,17 @@ class DownloaderGUI():
     def get_dir(self):
         self.var_download_dir.set(filedialog.askdirectory())
 
-    def get_link(self):
-        url = LinkGenerator(self.ent_tags.get(), self.sort_method.get())
-        link = url.generate_link()
-        return link
-
     def process_queue(self):
         try:
             data = self.thread_queue.get(False)
             flag = data[0]
             count = data[1:]
 
-            if flag == "c":
+            if flag == 'b': #begin
+                self.lbl_download.config(text=f"Fetching base url")
+            elif flag == 'c': # collecting
                 self.lbl_download.config(text=f"Collected {count} links")
-            elif flag == "d":
+            elif flag == 'd': # downloading
                 self.lbl_download.config(text=f"Downloaded {count} images")
             else:
                 self.lbl_download.config(text=f"No download in progress")
@@ -94,46 +90,13 @@ class DownloaderGUI():
 
         self.btn_download.configure(state=tk.DISABLED)
 
-        link = self.get_link()
-        pagereader = PageReader(link, self.var_download_dir.get(), int(self.ent_count.get()))
+        pagereader = PageReader(self.var_download_dir.get(), int(self.ent_count.get()), self.ent_tags.get(), self.sort_method.get())
 
         download_thread = threading.Thread(target=pagereader.download, args=(self.thread_queue,)) # run it again that comma should have fixed it
         download_thread.setDaemon(True)
         download_thread.start()
 
-        self.process_queue()        
-
-        """
-        
-        self.lbl_download.config(text=f"Collecting Links (0/{self.ent_count.get()})")
-        self.root.update()
-
-        gen = pagereader.collect_links()
-
-        while True:
-            try:
-                link_cnt = next(gen)
-                self.lbl_download.config(text=f"Collecting Links ({min(link_cnt, int(self.ent_count.get()))}/{self.ent_count.get()})")
-                self.root.update()
-            except StopIteration:
-                break
-
-        self.lbl_download.config(text="Downloading Images (0/0)")
-        self.root.update()
-
-        gen = pagereader.download(self.var_download_dir)
-        
-        while True:
-            try:
-                img_downloaded = next(gen)
-                self.lbl_download.config(text=f"Downloading Images ({img_downloaded}/{self.ent_count.get()})")
-                self.root.update()
-            except StopIteration:
-                break
-        
-        self.lbl_download.config(text="No download in progress")
-        self.btn_download.configure(state=tk.NORMAL)
-        """
+        self.process_queue()
 
 if __name__ == "__main__":
     bruh = DownloaderGUI()
